@@ -2,8 +2,10 @@ package com.brins.calendar
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,7 +18,6 @@ import com.brins.calendar.utils.DialogUtil
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import kotlinx.android.synthetic.main.activity_main.*
-import org.w3c.dom.Text
 
 class MainActivity : BaseActivity(),
 CalendarView.OnCalendarSelectListener,
@@ -26,6 +27,8 @@ CalendarView.OnWeekChangeListener,
         View.OnClickListener{
 
     lateinit var dialog : Dialog
+    lateinit var events : MutableList<EventInfo>
+    lateinit var adapter : EventAdapter
 
     override fun onWeekChange(weekCalendars: MutableList<Calendar>?) {
 
@@ -86,12 +89,9 @@ CalendarView.OnWeekChangeListener,
         current.setOnClickListener {
             calendarView.scrollToCurrent()
         }
-
         fab.setOnClickListener {
             dialog.show()
         }
-
-
         calendarView.setOnYearChangeListener(this)
         calendarView.setOnMonthChangeListener(this)
         calendarView.setOnCalendarSelectListener(this)
@@ -100,16 +100,16 @@ CalendarView.OnWeekChangeListener,
         tv_month_day.text = "${calendarView.curMonth}月${calendarView.curDay}日"
         tv_lunar.text = "今日"
         today.text = "${calendarView.curDay}"
-        val database = EventInfoDatabaseHelper.getInstance(this)
-        val events = database.appDatabase.dao().getEvent()
+        var database = EventInfoDatabaseHelper.getInstance(this)
+        events = database.appDatabase.dao().getEvent()
+        adapter = EventAdapter(this,events,database)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(GroupItemDecoration<String,EventInfo>())
-        var adapter = EventAdapter(this,events)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
         val view = LinearLayout.inflate(this,R.layout.dialog_layout,null)
-        view.findViewById<TextView>(R.id.date_start).text = "${calendarView.curMonth}月${calendarView.curDay}日上午10:00"
-        view.findViewById<TextView>(R.id.date_stop).text = "${calendarView.curMonth}月${calendarView.curDay}日下午10:00"
+        view.findViewById<TextView>(R.id.date_start).text = "${mYear}-${calendarView.curMonth}-${calendarView.curDay}"
+        view.findViewById<TextView>(R.id.date_stop).text = "${mYear}-${calendarView.curMonth}-${calendarView.curDay}"
         val dialogUtil = DialogUtil.Instance(this,view)
         dialog = dialogUtil.createDialog()
         val cancle = view.findViewById<TextView>(R.id.cancle)
@@ -122,48 +122,40 @@ CalendarView.OnWeekChangeListener,
             if (newevent != null){
                 dialog.dismiss()
                 adapter.addData(events.size,newevent)
+                events = database.appDatabase.dao().getEvent()
                 Toast.makeText(this,"保存成功",Toast.LENGTH_SHORT).show()
             }
         }
+        adapter.setOnItemClickListener(object : EventAdapter.Companion.OnItemClickListener{
+            override fun onItemClick(position: Int) {
+                Log.d("Adapter","$position")
+                var intent = Intent(this@MainActivity,EventActivity::class.java)
+                var event = events[position]
+                Log.d("Adapter","${event.mId}")
+                intent.putExtra("event",event.mId)
+                startActivityForResult(intent,1)
+            }
 
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == 1){
+            events = database.appDatabase.dao().getEvent()
+            adapter.remove(events)
+        }
     }
 
     override fun initData() {
         var year = calendarView.curYear
         var month = calendarView.curMonth
-
-        /*val map = HashMap<String, Calendar>()
-        map[getSchemeCalendar(year, month, 3, -0xbf24db, "假").toString()] = getSchemeCalendar(year, month, 3, -0xbf24db, "假")
-        map[getSchemeCalendar(year, month, 6, -0x196ec8, "事").toString()] = getSchemeCalendar(year, month, 6, -0x196ec8, "事")
-        map[getSchemeCalendar(year, month, 9, -0x20ecaa, "议").toString()] = getSchemeCalendar(year, month, 9, -0x20ecaa, "议")
-        map[getSchemeCalendar(year, month, 13, -0x123a93, "记").toString()] = getSchemeCalendar(year, month, 13, -0x123a93, "记")
-        map[getSchemeCalendar(year, month, 14, -0x123a93, "记").toString()] = getSchemeCalendar(year, month, 14, -0x123a93, "记")
-        map[getSchemeCalendar(year, month, 15, -0x5533bc, "假").toString()] = getSchemeCalendar(year, month, 15, -0x5533bc, "假")
-        map[getSchemeCalendar(year, month, 18, -0x43ec10, "记").toString()] = getSchemeCalendar(year, month, 18, -0x43ec10, "记")
-        map[getSchemeCalendar(year, month, 25, -0xec5310, "假").toString()] = getSchemeCalendar(year, month, 25, -0xec5310, "假")
-        map[getSchemeCalendar(year, month, 27, -0xec5310, "多").toString()] = getSchemeCalendar(year, month, 27, -0xec5310, "多")
-        //此方法在巨大的数据量上不影响遍历性能，推荐使用
-        calendarView.setSchemeDate(map)*/
-
-    }
-
-    private fun getSchemeCalendar(year: Int, month: Int, day: Int, color: Int, text: String): Calendar {
-        val calendar = Calendar()
-        calendar.year = year
-        calendar.month = month
-        calendar.day = day
-        calendar.schemeColor = color//如果单独标记颜色、则会使用这个颜色
-        calendar.scheme = text
-        calendar.addScheme(Calendar.Scheme())
-        calendar.addScheme(-0xff7800, "假")
-        calendar.addScheme(-0xff7800, "节")
-        return calendar
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
         super.onCreate(savedInstanceState)
-
-
     }
+
+
 }

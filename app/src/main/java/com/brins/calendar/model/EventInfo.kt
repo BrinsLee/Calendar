@@ -16,9 +16,9 @@ class EventInfo : Serializable {
     @ColumnInfo(name = "title")
     var title : String = "无标题"
     @ColumnInfo(name = "date_start")
-    var start : String = "4月27"
+    var start : String = "2019-4-27"
     @ColumnInfo(name = "date_stop")
-    var stop : String = "4月27"
+    var stop : String = "2019-4-27"
     @ColumnInfo(name = "ahead")
     var ahead : String = ""
     @ColumnInfo(name = "affair")

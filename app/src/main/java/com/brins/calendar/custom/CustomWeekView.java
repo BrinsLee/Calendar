@@ -20,40 +20,21 @@ public class CustomWeekView extends WeekView {
 
 
     private int mRadius;
-
-    /**
-     * 自定义魅族标记的文本画笔
-     */
     private Paint mTextPaint = new Paint();
 
-
-    /**
-     * 24节气画笔
-     */
     private Paint mSolarTermTextPaint = new Paint();
 
-    /**
-     * 背景圆点
-     */
     private Paint mPointPaint = new Paint();
 
-    /**
-     * 今天的背景色
-     */
     private Paint mCurrentDayPaint = new Paint();
 
 
-    /**
-     * 圆点半径
-     */
     private float mPointRadius;
 
     private int mPadding;
 
     private float mCircleRadius;
-    /**
-     * 自定义魅族标记的圆形背景
-     */
+
     private Paint mSchemeBasicPaint = new Paint();
 
     private float mSchemeBaseLine;
@@ -193,13 +174,6 @@ public class CustomWeekView extends WeekView {
         }
     }
 
-    /**
-     * dp转px
-     *
-     * @param context context
-     * @param dpValue dp
-     * @return px
-     */
     private static int dipToPx(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);

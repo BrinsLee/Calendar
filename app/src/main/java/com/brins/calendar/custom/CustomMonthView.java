@@ -11,47 +11,24 @@ import android.view.View;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.MonthView;
 
-/**
- * 演示一个变态需求的月视图
- * Created by huanghaibin on 2018/2/9.
- */
 
 public class CustomMonthView extends MonthView {
 
     private int mRadius;
-
-    /**
-     * 自定义魅族标记的文本画笔
-     */
+    
     private Paint mTextPaint = new Paint();
-
-
-    /**
-     * 24节气画笔
-     */
+    
     private Paint mSolarTermTextPaint = new Paint();
 
-    /**
-     * 背景圆点
-     */
     private Paint mPointPaint = new Paint();
 
-    /**
-     * 今天的背景色
-     */
     private Paint mCurrentDayPaint = new Paint();
 
-    /**
-     * 圆点半径
-     */
     private float mPointRadius;
 
     private int mPadding;
 
     private float mCircleRadius;
-    /**
-     * 自定义魅族标记的圆形背景
-     */
     private Paint mSchemeBasicPaint = new Paint();
 
     private float mSchemeBaseLine;
@@ -148,7 +125,6 @@ public class CustomMonthView extends MonthView {
             canvas.drawText(calendar.getScheme(), x + mItemWidth - mPadding - mCircleRadius, y + mPadding + mSchemeBaseLine, mTextPaint);
         }
 
-        //当然可以换成其它对应的画笔就不麻烦，
         if (calendar.isWeekend() && calendar.isCurrentMonth()) {
             mCurMonthTextPaint.setColor(0xFF489dff);
             mCurMonthLunarTextPaint.setColor(0xFF489dff);
@@ -189,13 +165,6 @@ public class CustomMonthView extends MonthView {
         }
     }
 
-    /**
-     * dp转px
-     *
-     * @param context context
-     * @param dpValue dp
-     * @return px
-     */
     private static int dipToPx(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);

@@ -24,4 +24,7 @@ class EventInfoDatabaseHelper(context :Context) {
             return INSTANCE!!
         }
     }
+    fun update(event: EventInfo) {
+        appDatabase.dao().updateViaId(event.title,event.start,event.stop,event.affair,event.location,event.mId)
+    }
 }

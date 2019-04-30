@@ -9,7 +9,7 @@ interface Dao {
     @Insert
     fun addEvent(collection : EventInfo)
 
-    @Query("select * from event order by ID DESC")
+    @Query("select * from event")
     fun getEvent():MutableList<EventInfo>
 
     @Query("select * from event where ID = :id")
@@ -20,4 +20,10 @@ interface Dao {
 
     @Query("delete from event where date_start =:date")
     fun deleteViaDate(date : String)
+
+    @Query("delete from event where ID =:id")
+    fun deleteViaId(id : Int)
+
+    @Query("update event set title = :title,date_start = :start,date_stop = :stop,affair = :affair,location = :location where ID = :mid")
+    fun updateViaId(title:String , start:String ,stop:String,affair:String,location: String ,mid:Int)
 }
