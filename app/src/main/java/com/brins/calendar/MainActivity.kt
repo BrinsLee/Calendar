@@ -23,8 +23,7 @@ class MainActivity : BaseActivity(),
 CalendarView.OnCalendarSelectListener,
 CalendarView.OnMonthChangeListener,
 CalendarView.OnYearChangeListener,
-CalendarView.OnWeekChangeListener,
-        View.OnClickListener{
+CalendarView.OnWeekChangeListener{
 
     lateinit var dialog : Dialog
     lateinit var events : MutableList<EventInfo>
@@ -64,10 +63,6 @@ CalendarView.OnWeekChangeListener,
 
     override fun onYearChange(year: Int) {
         tv_month_day.text = "$year"
-    }
-
-
-    override fun onClick(v: View?) {
     }
 
     private var mYear: Int = 0
@@ -145,11 +140,6 @@ CalendarView.OnWeekChangeListener,
             events = database.appDatabase.dao().getEvent()
             adapter.remove(events)
         }
-    }
-
-    override fun initData() {
-        var year = calendarView.curYear
-        var month = calendarView.curMonth
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,11 +1,18 @@
 package com.brins.calendar.utils
 
 import android.annotation.TargetApi
+import android.app.AlarmManager
 import android.app.Dialog
+import android.app.PendingIntent
+import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Context.ALARM_SERVICE
+import android.content.Intent
+import android.icu.util.Calendar
 import android.icu.util.GregorianCalendar
 import android.os.Build
 import android.text.TextUtils
+import android.util.Log
 import android.view.ViewGroup
 import android.util.TypedValue
 import android.view.Gravity
@@ -36,6 +43,7 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
     val database = EventInfoDatabaseHelper.getInstance(context)
     var whichbt = 0
     val ed_title = view.findViewById<EditText>(R.id.ed_title)
+    val tv_ahead = view.findViewById<TextView>(R.id.ahead)
     val ed_location = view.findViewById<EditText>(R.id.ed_location)
     val ed_event = view.findViewById<EditText>(R.id.ed_event)
     val ed_start = view.findViewById<TextView>(R.id.date_start)
@@ -72,6 +80,12 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
             date_dialog.show()
             whichbt = 0
         }
+        tv_ahead.setOnClickListener {
+            TimePickerDialog(context, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                tv_ahead.text = "$hourOfDay:$minute"
+            },0,0,true).show()
+        }
+
 
     }
     fun createDialog():Dialog{
@@ -109,7 +123,33 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
             newEvent.start = start
             newEvent.stop = stop
             database.appDatabase.dao().addEvent(newEvent)
+            setAlarm(newEvent)
         }
         return newEvent
+    }
+
+    private fun setAlarm(newEventInfo: EventInfo) {
+        var intent = Intent("com.brins.calendar.MY_BROADCAST")
+        Log.d("packagename","${context.packageName}")
+        intent.setPackage(context.packageName)
+        intent.putExtra("title",newEventInfo.title)
+        intent.putExtra("dateStart","${newEventInfo.start}")
+        intent.putExtra("dateStop","${newEventInfo.stop}")
+        intent.putExtra("affair",newEventInfo.affair)
+        intent.putExtra("location","${newEventInfo.location}")
+//        context.sendBroadcast(intent)
+        var time = "${ed_start.text} ${tv_ahead.text}:0"
+        var pendingIntent: PendingIntent = PendingIntent.getBroadcast(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+        var am : AlarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
+        am.set(AlarmManager.RTC_WAKEUP,coverToMillis(time),pendingIntent)
+
+
+    }
+
+    fun coverToMillis(time: String) : Long{
+        val calendar = Calendar.getInstance()
+        calendar.time = SimpleDateFormat("yyyy-MM-dd H:m:s").parse(time)
+        Log.d("dialog","${calendar.timeInMillis}")
+        return  calendar.timeInMillis
     }
 }

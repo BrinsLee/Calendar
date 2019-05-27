@@ -9,21 +9,11 @@ import com.brins.calendar.database.EventInfoDatabaseHelper
 abstract class BaseActivity : AppCompatActivity() {
 
     lateinit var database :EventInfoDatabaseHelper
-
-    protected fun initWindow() {
-
-    }
-
     protected abstract fun initView()
-
-    protected abstract fun initData()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         database = EventInfoDatabaseHelper.getInstance(this)
         initView()
-        initData()
-        initWindow()
     }
 
     @SuppressLint("InlineedApi")

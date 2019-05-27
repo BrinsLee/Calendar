@@ -7,6 +7,7 @@ import android.support.annotation.RequiresApi
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import com.tsongkha.spinnerdatepicker.DatePicker
 import com.tsongkha.spinnerdatepicker.DatePickerDialog
 import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder
@@ -28,53 +29,65 @@ class EventActivity : BaseActivity(), DatePickerDialog.OnDateSetListener {
             0 -> date_stop.text = simpleDateFormat.format(calendar1.time)
         }
     }
-
-
     override fun initView() {}
-
-    override fun initData() {}
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event)
         setSupportActionBar(toolbar_lay)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        var i = intent.getIntExtra("event",0)
-        var events = database.appDatabase.dao().getEventViaId(i)
-        Log.d("EventAct","${events.size}")
-        var event = events[0]
-        val title = event.title
-        val location = event.location
-        val affair = event.affair
-        val dateStart = event.start
-        val dateStop = event.stop
-        ed_title.setText(title)
-        ed_location.setText(location)
-        ed_event.setText(affair)
-        date_start.text = dateStart
-        date_stop.text = dateStop
+        if (intent.getBooleanExtra("broad",false)){
+
+            val title = intent.getStringExtra("title")
+            val location = intent.getStringExtra("location")
+            val dateStart = intent.getStringExtra("dateStart")
+            val dateStop = intent.getStringExtra("dateStop")
+            val affair = intent.getStringExtra("affair")
+            ed_title.setText(title)
+            ed_location.setText(location)
+            ed_event.setText(affair)
+            date_start.text = dateStart
+            date_stop.text = dateStop
+            confirm.visibility = View.GONE
+        }else{
+            var i = intent.getIntExtra("event",0)
+            var events = database.appDatabase.dao().getEventViaId(i)
+            Log.d("EventAct","${events.size}")
+            var event = events[0]
+            val title = event.title
+            val location = event.location
+            val affair = event.affair
+            val dateStart = event.start
+            val dateStop = event.stop
+            ed_title.setText(title)
+            ed_location.setText(location)
+            ed_event.setText(affair)
+            date_start.text = dateStart
+            date_stop.text = dateStop
+            confirm.setOnClickListener {
+                if (TextUtils.equals(title,ed_title.text)&&TextUtils.equals(location,ed_location.text)
+                        &&TextUtils.equals(affair,ed_event.text)&&TextUtils.equals(dateStart,date_start.text)
+                        &&TextUtils.equals(dateStop,date_stop.text)){
+                    finish()
+                }
+                event.title = ed_title.text.toString()
+                event.location = ed_location.text.toString()
+                event.start = date_start.text.toString()
+                event.stop = date_stop.text.toString()
+                event.start = date_start.text.toString()
+                event.affair = ed_event.text.toString()
+                database.update(event)
+                setResult(1)
+                finish()
+
+            }
+            addListener()
+        }
+
         cancle.setOnClickListener {
             finish()
         }
-        confirm.setOnClickListener {
-            if (TextUtils.equals(title,ed_title.text)&&TextUtils.equals(location,ed_location.text)
-                    &&TextUtils.equals(affair,ed_event.text)&&TextUtils.equals(dateStart,date_start.text)
-                    &&TextUtils.equals(dateStop,date_stop.text)){
-                finish()
-            }
-            event.title = ed_title.text.toString()
-            event.location = ed_location.text.toString()
-            event.start = date_start.text.toString()
-            event.stop = date_stop.text.toString()
-            event.start = date_start.text.toString()
-            event.affair = ed_event.text.toString()
-            database.update(event)
-            setResult(1)
-            finish()
 
-        }
-        addListener()
 
     }
     fun addListener(){
