@@ -55,7 +55,7 @@
     <TextView
         android:id="@+id/ahead"
         android:layout_margin="10dp"
-        android:text="时间"
+        android:text="00:00"
         android:gravity="center"
         android:textColor="@android:color/black"
         android:drawableLeft="@drawable/ic_add_alarm_black_24dp"

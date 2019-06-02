@@ -72,8 +72,9 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+
     <EditText
-        android:layout_width="match_parent" android:inputType="" 
+        android:layout_width="match_parent" android:inputType=""
         android:layout_height="50dp"
         android:id="@+id/ed_location"
         android:hint="@string/location"
@@ -101,17 +102,21 @@
             android:id="@+id/cancle"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:text="@string/cancel"
-            android:textColor="@color/colorAccent"
+            android:background="@drawable/bg_btn"
+            android:textColor="@android:color/white"
             android:gravity="center" />
         <TextView
             android:id="@+id/confirm"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:text="@string/confirm"
-            android:textColor="@color/colorAccent"
+            android:background="@drawable/bg_btn"
+            android:textColor="@android:color/white"
             android:gravity="center" />
     </LinearLayout>
     </LinearLayout>

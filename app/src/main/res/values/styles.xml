@@ -21,6 +21,9 @@
         <item name="android:windowExitAnimation">@anim/tranlate_dialog_out</item>
     </style>
 
+    <declare-styleable name="RoundConstraintLayout">
+        <attr name="round_corner" format="dimension" />
+    </declare-styleable>
     <style name="NumberPickerStyle">
         <item name="android:textSize">22dp</item>
         <item name="android:textColorPrimary">@color/colorAccent</item>
@@ -28,4 +31,23 @@
             tools:targetApi="lollipop">@color/colorAccent</item>
     </style>
 
+    <style name="CalendarCell">
+        <item name="android:id">@android:id/text1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textColor">@color/foreground_semi</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <declare-styleable name="FontTextView">
+        <attr name="font_type" format="enum">
+            <enum name="DIN-Bold" value="1" />
+            <enum name="DIN-Medium" value="2" />
+            <enum name="DIN-Regular" value="3" />
+            <enum name="LilyScriptOne-Regular" value="4" />
+        </attr>
+    </declare-styleable>
 </resources>

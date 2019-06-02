@@ -28,6 +28,7 @@
             tools:ignore="RtlSymmetry" />
 
         <LinearLayout
+            android:id="@+id/layout_year"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toRightOf="@+id/tv_month_day"
@@ -58,10 +59,41 @@
                 tools:ignore="SmallSp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/layout_lunar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/layout_year"
+            android:orientation="vertical"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            tools:ignore="RelativeOverlap">
+
+            <TextView
+                android:id="@+id/tv_lunar_year"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_lunar_animal"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="10sp"
+                tools:ignore="SmallSp" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/current"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="12dp"
@@ -72,7 +104,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="10"
-                android:layout_marginTop="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dp"
                 android:layout_centerHorizontal="true"
                 android:textColor="@android:color/black"
                 android:textSize="15sp" />
@@ -85,7 +118,7 @@
             android:id="@+id/calendarLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
+            android:background="@color/foreground_semi"
             android:orientation="vertical"
             app:calendar_content_view_id="@+id/recyclerView">
 
@@ -128,8 +161,8 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/content_background"
-                app:group_background="@color/content_background"
+                android:background="#F2F2F2"
+                app:group_background="@color/foreground_semi"
                 app:group_center="false"
                 app:group_has_header="false"
                 app:group_height="42dp"

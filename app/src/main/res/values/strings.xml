@@ -14,4 +14,7 @@
     <string name="affair">affairs</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+
+    <string name="previous_month">Previous month</string>
+    <string name="next_month">Next month</string>
 </resources>

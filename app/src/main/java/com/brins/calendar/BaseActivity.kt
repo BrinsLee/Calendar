@@ -8,8 +8,11 @@ import com.brins.calendar.database.EventInfoDatabaseHelper
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    lateinit var database :EventInfoDatabaseHelper
+    open lateinit var database :EventInfoDatabaseHelper
     protected abstract fun initView()
+    open fun onCreateAfterBinding(){
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         database = EventInfoDatabaseHelper.getInstance(this)

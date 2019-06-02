@@ -24,7 +24,9 @@ import com.brins.calendar.model.EventInfo
 import com.tsongkha.spinnerdatepicker.DatePicker
 import com.tsongkha.spinnerdatepicker.DatePickerDialog
 import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder
+import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class DialogUtil private constructor(var context :Context,var view: View): DatePickerDialog.OnDateSetListener{
@@ -100,6 +102,15 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
         return dialog
     }
 
+    fun setStart(start : String){
+        view.findViewById<TextView>(R.id.date_start).text = start
+
+    }
+
+    fun setEnd(end : String){
+        view.findViewById<TextView>(R.id.date_stop).text = end
+    }
+
     fun dp2px(dpVal: Float): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal,
                 context.resources.displayMetrics).toInt()
@@ -113,6 +124,15 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
         var event = ed_event.text.toString()
         var start = ed_start.text.toString()
         var stop =  ed_stop.text.toString()
+        when(getRandom()){
+            1->newEvent.bg = R.mipmap.bg_event
+            2->newEvent.bg = R.mipmap.bg_event2
+            3->newEvent.bg = R.mipmap.bg_event3
+            4->newEvent.bg = R.mipmap.bg_event4
+            5->newEvent.bg = R.mipmap.bg_event5
+            6->newEvent.bg = R.mipmap.bg_event6
+            7->newEvent.bg = R.mipmap.bg_event7
+        }
         if (TextUtils.isEmpty(title)&&TextUtils.isEmpty(location)&&TextUtils.isEmpty(event)){
             return null
         }else{
@@ -120,7 +140,7 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
             newEvent.location = location
             if(!TextUtils.isEmpty(title))
                 newEvent.title = title
-            newEvent.start = start
+            newEvent.start = "$start ${tv_ahead.text}:00"
             newEvent.stop = stop
             database.appDatabase.dao().addEvent(newEvent)
             setAlarm(newEvent)
@@ -138,11 +158,16 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
         intent.putExtra("affair",newEventInfo.affair)
         intent.putExtra("location","${newEventInfo.location}")
 //        context.sendBroadcast(intent)
-        var time = "${ed_start.text} ${tv_ahead.text}:0"
+        var time = newEventInfo.start
         var pendingIntent: PendingIntent = PendingIntent.getBroadcast(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
         var am : AlarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
         am.set(AlarmManager.RTC_WAKEUP,coverToMillis(time),pendingIntent)
 
+
+    }
+
+    private fun getRandom(): Int {
+        return Random().nextInt(6)+1
 
     }
 

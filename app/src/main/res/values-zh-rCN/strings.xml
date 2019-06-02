@@ -14,4 +14,7 @@
 	<string name="affair">事务</string>
 	<string name="cancel">取消</string>
 	<string name="confirm">确认</string>
+
+	<string name="previous_month">上个月</string>
+	<string name="next_month">下个月</string>
 </resources>

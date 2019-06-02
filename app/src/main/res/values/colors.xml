@@ -3,8 +3,23 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#ffffff</color>
     <color name="colorAccent">#4470ff</color>
+    <color name="blue">#7f7fd5</color>
 
     <color name="line_color">#e7e7e7</color>
     <color name="content_background">#f2f2f2</color>
     <color name="solar_background">#009988</color>
+
+    <color name="foreground_full">#fff</color>
+    <color name="foreground_semi">#4fff</color>
+    <color name="foreground_today">#111</color>
+    <color name="background_today">#fff</color>
+
+    <color name="white_10">#1AFFFFFF</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="white_30">#4DFFFFFF</color>
+    <color name="white_40">#66FFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
+    <color name="white_60">#99FFFFFF</color>
+    <color name="white_70">#B3FFFFFF</color>
+    <color name="white_80">#CCFFFFFF</color>
 </resources>

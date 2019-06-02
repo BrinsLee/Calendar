@@ -7,6 +7,7 @@ import com.brins.calendar.model.EventInfo
 class EventInfoDatabaseHelper(context :Context) {
 
     val appDatabase = Room.databaseBuilder(context,EventInfoDatabase::class.java,"event")
+            .addMigrations(EventInfoDatabase.MIGRATION_2_3)
             .allowMainThreadQueries().build()
 
     companion object {
