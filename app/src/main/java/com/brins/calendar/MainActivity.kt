@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -54,6 +55,7 @@ CalendarView.OnWeekChangeListener{
     private var mYear: Int = 0
     private var mMonth = 0
     private var mDay : Int = 0
+    private var handler = Handler()
 
     override fun onWeekChange(weekCalendars: MutableList<Calendar>?) {
 
@@ -129,6 +131,8 @@ CalendarView.OnWeekChangeListener{
         calendarView.setOnCalendarSelectListener(this)
         tv_year.text = "${calendarView.curYear}"
         mYear = calendarView.curYear
+        mMonth = calendarView.curMonth
+        mDay = calendarView.curDay
         tv_month_day.text = "${calendarView.curMonth}月${calendarView.curDay}日"
         tv_lunar.text = getString(R.string.today)
         today.text = "${calendarView.curDay}"
@@ -138,8 +142,8 @@ CalendarView.OnWeekChangeListener{
         recyclerView.addItemDecoration(GroupItemDecoration<String,EventInfo>())
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
-        view = layoutInflater.inflate(R.layout.recyclerview_header,null,false)
         getLunarData("${calendarView.curYear}-${calendarView.curMonth}-${calendarView.curDay}")
+        view = layoutInflater.inflate(R.layout.recyclerview_header,null,false)
         val view = LinearLayout.inflate(this,R.layout.dialog_layout,null)
         dialogUtil = DialogUtil.Instance(this,view)
         dialogUtil.setStart("$mYear-${calendarView.curMonth}-${calendarView.curDay}")
@@ -152,12 +156,15 @@ CalendarView.OnWeekChangeListener{
         }
         confirm.setOnClickListener {
             var newevent = dialogUtil.saveEvent()
-            if (newevent != null){
-                dialog.dismiss()
-                events.add(newevent)
-                adapter.update(events)
-                Toast.makeText(this,"保存成功",Toast.LENGTH_SHORT).show()
-            }
+            Toast.makeText(this,getString(R.string.saving),Toast.LENGTH_SHORT).show()
+            handler.postDelayed({
+                if (newevent != null){
+                    dialog.dismiss()
+                    events.add(newevent)
+                    adapter.update(events)
+                    Toast.makeText(this,getString(R.string.save_success),Toast.LENGTH_SHORT).show()
+                }
+            },1500)
         }
         adapter.setOnItemClickListener(object : OnItemClickListener{
             override fun onItemClick(position: Int) {
@@ -169,6 +176,10 @@ CalendarView.OnWeekChangeListener{
             }
 
         })
+    }
+
+    override fun onCreateAfterBinding() {
+        super.onCreateAfterBinding()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -192,7 +203,7 @@ CalendarView.OnWeekChangeListener{
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == 1){
             events = database.appDatabase.dao().getEventViaDate("$mYear-$mMonth-$mDay%")
-            adapter.remove(events)
+            adapter.update(events)
         }
     }
 

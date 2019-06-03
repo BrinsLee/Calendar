@@ -1,8 +1,11 @@
 package com.brins.calendar
 
+import android.annotation.SuppressLint
 import android.icu.util.GregorianCalendar
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.support.annotation.RequiresApi
 import android.text.TextUtils
 import android.util.Log
@@ -21,6 +24,8 @@ import org.greenrobot.eventbus.Subscribe
 
 
 class EventActivity : BaseActivity(), DatePickerDialog.OnDateSetListener {
+
+    private val handler = Handler()
     override fun initView() {
 
     }
@@ -55,23 +60,25 @@ class EventActivity : BaseActivity(), DatePickerDialog.OnDateSetListener {
             ed_event.setText(affair)
             date_start.text = dateStart
             date_stop.text = dateStop
-            confirm.visibility = View.GONE
             confirm.setOnClickListener {
                 if (TextUtils.equals(title,ed_title.text)&&TextUtils.equals(location,ed_location.text)
                         &&TextUtils.equals(affair,ed_event.text)&&TextUtils.equals(dateStart,date_start.text)
                         &&TextUtils.equals(dateStop,date_stop.text)){
                     finish()
+                }else {
+                    loading_lay.visibility = View.VISIBLE
+                    eventInfo.title = ed_title.text.toString()
+                    eventInfo.location = ed_location.text.toString()
+                    eventInfo.start = date_start.text.toString()
+                    eventInfo.stop = date_stop.text.toString()
+                    eventInfo.start = date_start.text.toString()
+                    eventInfo.affair = ed_event.text.toString()
+                    database.update(eventInfo)
+                    handler.postDelayed({
+                        setResult(1)
+                        finish()
+                    }, 1200)
                 }
-
-                eventInfo.title = ed_title.text.toString()
-                eventInfo.location = ed_location.text.toString()
-                eventInfo.start = date_start.text.toString()
-                eventInfo.stop = date_stop.text.toString()
-                eventInfo.start = date_start.text.toString()
-                eventInfo.affair = ed_event.text.toString()
-                database.update(eventInfo)
-                setResult(1)
-                finish()
 
         }
 

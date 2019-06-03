@@ -12,11 +12,13 @@
     <string name="stop">Stop</string>
     <string name="location">Location</string>
     <string name="affair">affairs</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Back</string>
     <string name="confirm">Confirm</string>
 
     <string name="previous_month">Previous month</string>
     <string name="next_month">Next month</string>
     <string name="today">Today</string>
-    <string name="date">日期</string>
+    <string name="date">Date</string>
+    <string name="saving">Saving...</string>
+    <string name="save_success">Saved</string>
 </resources>

@@ -71,6 +71,10 @@
         android:drawableLeft="@drawable/ic_location"
         android:layout_margin="10dp"/>
 
+        <include
+            android:id="@+id/loading_lay"
+            layout="@layout/loading_layout"
+            android:visibility="gone"/>
     <EditText
         android:id="@+id/ed_event"
         android:hint="@string/affair"

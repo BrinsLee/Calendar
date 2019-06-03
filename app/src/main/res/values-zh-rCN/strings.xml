@@ -12,10 +12,14 @@
 	<string name="stop">停止</string>
 	<string name="location">位置</string>
 	<string name="affair">事务</string>
-	<string name="cancel">取消</string>
+	<string name="cancel">返回</string>
 	<string name="confirm">确认</string>
 
 	<string name="previous_month">上个月</string>
 	<string name="next_month">下个月</string>
 	<string name="today">今日</string>
+
+	<string name="date">日期</string>
+	<string name="saving">保存中...</string>
+	<string name="save_success">保存成功</string>
 </resources>
