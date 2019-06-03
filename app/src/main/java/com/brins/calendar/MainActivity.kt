@@ -29,6 +29,9 @@ import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_main.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 class MainActivity : BaseActivity(),
@@ -48,6 +51,10 @@ CalendarView.OnWeekChangeListener{
     lateinit var dialogUtil : DialogUtil
     lateinit var lunarData : LunarData
     lateinit var view : View
+    private var mYear: Int = 0
+    private var mMonth = 0
+    private var mDay : Int = 0
+
     override fun onWeekChange(weekCalendars: MutableList<Calendar>?) {
 
     }
@@ -74,9 +81,12 @@ CalendarView.OnWeekChangeListener{
         tv_year.text = "${calendar.year}"
         tv_lunar.text = "${calendar.lunar}"
         mYear = calendar.year
+        mMonth = calendar.month
+        mDay = calendar.day
         dialogUtil.setStart("${calendar.year}-${calendar.month}-${calendar.day}")
         dialogUtil.setEnd("${calendar.year}-${calendar.month}-${calendar.day}")
         events = database.appDatabase.dao().getEventViaDate("${calendar.year}-${calendar.month}-${calendar.day}%")
+//        getLunarData("$mYear-$mMonth-$mDay")
         if (events.size == 0) {
             Toast.makeText(this,"无事件",Toast.LENGTH_SHORT).show()
         }
@@ -92,7 +102,6 @@ CalendarView.OnWeekChangeListener{
         tv_month_day.text = "$year"
     }
 
-    private var mYear: Int = 0
 
     @SuppressLint("SetTextI18n", "RestrictedApi")
     override fun initView() {
@@ -123,7 +132,7 @@ CalendarView.OnWeekChangeListener{
         tv_month_day.text = "${calendarView.curMonth}月${calendarView.curDay}日"
         tv_lunar.text = getString(R.string.today)
         today.text = "${calendarView.curDay}"
-        events = database.appDatabase.dao().getEventViaDate("${calendarView.curYear}-${calendarView.curMonth}-${calendarView.curDay}")
+        events = database.appDatabase.dao().getEventViaDate("${calendarView.curYear}-${calendarView.curMonth}-${calendarView.curDay}%")
         adapter = EventAdapter(this,events)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(GroupItemDecoration<String,EventInfo>())
@@ -145,8 +154,8 @@ CalendarView.OnWeekChangeListener{
             var newevent = dialogUtil.saveEvent()
             if (newevent != null){
                 dialog.dismiss()
-                adapter.addData(newevent)
-                events = database.appDatabase.dao().getEvent()
+                events.add(newevent)
+                adapter.update(events)
                 Toast.makeText(this,"保存成功",Toast.LENGTH_SHORT).show()
             }
         }
@@ -155,14 +164,15 @@ CalendarView.OnWeekChangeListener{
                 Log.d("Adapter","$position")
                 var intent = Intent(this@MainActivity,EventActivity::class.java)
                 var event = events[position]
-                Log.d("Adapter","${event.mId}")
-                intent.putExtra("event",event.mId)
+                EventBus.getDefault().postSticky(event)
                 startActivityForResult(intent,1)
             }
 
         })
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun Event(messageEvent : EventInfo) {}
     @SuppressLint("SetTextI18n")
     fun getLunarData(date : String){
         getLunarCalendar(Consumer{
@@ -181,7 +191,7 @@ CalendarView.OnWeekChangeListener{
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == 1){
-            events = database.appDatabase.dao().getEvent()
+            events = database.appDatabase.dao().getEventViaDate("$mYear-$mMonth-$mDay%")
             adapter.remove(events)
         }
     }
@@ -189,6 +199,15 @@ CalendarView.OnWeekChangeListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
     }
 
 
@@ -208,7 +227,7 @@ CalendarView.OnWeekChangeListener{
             holder.date.text = "${events[position].start}"
             holder.affair.text = events[position].affair
             if (events[position].bg == null){
-                events[position].bg = R.mipmap.bg_event
+                events[position].bg = R.drawable.bg_event
                 database.update(events[position])
             }
             holder.layout.background = context.resources.getDrawable(events[position].bg!!,null)

@@ -24,7 +24,6 @@ import com.brins.calendar.model.EventInfo
 import com.tsongkha.spinnerdatepicker.DatePicker
 import com.tsongkha.spinnerdatepicker.DatePickerDialog
 import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder
-import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,25 +31,15 @@ import java.util.*
 class DialogUtil private constructor(var context :Context,var view: View): DatePickerDialog.OnDateSetListener{
     @TargetApi(Build.VERSION_CODES.N)
     override fun onDateSet(view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-
-        val calendar1 = GregorianCalendar(year, monthOfYear, dayOfMonth)
-        when (whichbt){
-            1 -> {
-                ed_start.text = simpleDateFormat.format(calendar1.time)
-            }
-            0 -> ed_stop.text = simpleDateFormat.format(calendar1.time)
-        }
     }
 
     val database = EventInfoDatabaseHelper.getInstance(context)
-    var whichbt = 0
     val ed_title = view.findViewById<EditText>(R.id.ed_title)
     val tv_ahead = view.findViewById<TextView>(R.id.ahead)
     val ed_location = view.findViewById<EditText>(R.id.ed_location)
     val ed_event = view.findViewById<EditText>(R.id.ed_event)
     val ed_start = view.findViewById<TextView>(R.id.date_start)
     val ed_stop = view.findViewById<TextView>(R.id.date_stop)
-    private val simpleDateFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     init {
         addListener()
     }
@@ -63,25 +52,6 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
     }
 
     fun addListener(){
-        var date_dialog=SpinnerDatePickerDialogBuilder()
-                .context(context)
-                .callback(this)
-                .spinnerTheme(R.style.NumberPickerStyle)
-                .showTitle(true)
-                .showDaySpinner(true)
-                .defaultDate(2019, 3, 27)
-                .maxDate(2030, 0, 1)
-                .minDate(2018, 0, 1)
-                .build()
-
-        ed_start.setOnClickListener {
-            date_dialog.show()
-            whichbt = 1
-        }
-        ed_stop.setOnClickListener {
-            date_dialog.show()
-            whichbt = 0
-        }
         tv_ahead.setOnClickListener {
             TimePickerDialog(context, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                 tv_ahead.text = "$hourOfDay:$minute"
@@ -125,13 +95,10 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
         var start = ed_start.text.toString()
         var stop =  ed_stop.text.toString()
         when(getRandom()){
-            1->newEvent.bg = R.mipmap.bg_event
-            2->newEvent.bg = R.mipmap.bg_event2
-            3->newEvent.bg = R.mipmap.bg_event3
-            4->newEvent.bg = R.mipmap.bg_event4
-            5->newEvent.bg = R.mipmap.bg_event5
-            6->newEvent.bg = R.mipmap.bg_event6
-            7->newEvent.bg = R.mipmap.bg_event7
+            1->newEvent.bg = R.drawable.bg_event
+            2->newEvent.bg = R.drawable.bg_event_2
+            3->newEvent.bg = R.drawable.bg_event_2
+
         }
         if (TextUtils.isEmpty(title)&&TextUtils.isEmpty(location)&&TextUtils.isEmpty(event)){
             return null
@@ -167,7 +134,8 @@ class DialogUtil private constructor(var context :Context,var view: View): DateP
     }
 
     private fun getRandom(): Int {
-        return Random().nextInt(6)+1
+        var i = Random().nextInt(2)+1
+        return i
 
     }
 

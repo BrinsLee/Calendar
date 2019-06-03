@@ -18,4 +18,5 @@
     <string name="previous_month">Previous month</string>
     <string name="next_month">Next month</string>
     <string name="today">Today</string>
+    <string name="date">日期</string>
 </resources>

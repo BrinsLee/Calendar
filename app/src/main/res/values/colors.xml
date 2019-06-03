@@ -14,6 +14,9 @@
     <color name="foreground_today">#111</color>
     <color name="background_today">#fff</color>
 
+    <color name="pupler">#6118EA</color>
+    <color name="white">#ffffff</color>
+
     <color name="white_10">#1AFFFFFF</color>
     <color name="white_20">#33FFFFFF</color>
     <color name="white_30">#4DFFFFFF</color>
