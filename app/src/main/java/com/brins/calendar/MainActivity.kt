@@ -11,6 +11,7 @@ import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,7 @@ CalendarView.OnWeekChangeListener{
     lateinit var dialogEnd : TextView
     lateinit var dialogUtil : DialogUtil
     lateinit var lunarData : LunarData
+    lateinit var view : View
     override fun onWeekChange(weekCalendars: MutableList<Calendar>?) {
 
     }
@@ -74,7 +76,7 @@ CalendarView.OnWeekChangeListener{
         mYear = calendar.year
         dialogUtil.setStart("${calendar.year}-${calendar.month}-${calendar.day}")
         dialogUtil.setEnd("${calendar.year}-${calendar.month}-${calendar.day}")
-        events = database.appDatabase.dao().getEventViaDate("${calendar.year}-${calendar.month}-${calendar.day}")
+        events = database.appDatabase.dao().getEventViaDate("${calendar.year}-${calendar.month}-${calendar.day}%")
         if (events.size == 0) {
             Toast.makeText(this,"无事件",Toast.LENGTH_SHORT).show()
         }
@@ -119,7 +121,7 @@ CalendarView.OnWeekChangeListener{
         tv_year.text = "${calendarView.curYear}"
         mYear = calendarView.curYear
         tv_month_day.text = "${calendarView.curMonth}月${calendarView.curDay}日"
-        tv_lunar.text = "今日"
+        tv_lunar.text = getString(R.string.today)
         today.text = "${calendarView.curDay}"
         events = database.appDatabase.dao().getEventViaDate("${calendarView.curYear}-${calendarView.curMonth}-${calendarView.curDay}")
         adapter = EventAdapter(this,events)
@@ -127,6 +129,7 @@ CalendarView.OnWeekChangeListener{
         recyclerView.addItemDecoration(GroupItemDecoration<String,EventInfo>())
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
+        view = layoutInflater.inflate(R.layout.recyclerview_header,null,false)
         getLunarData("${calendarView.curYear}-${calendarView.curMonth}-${calendarView.curDay}")
         val view = LinearLayout.inflate(this,R.layout.dialog_layout,null)
         dialogUtil = DialogUtil.Instance(this,view)
@@ -166,6 +169,12 @@ CalendarView.OnWeekChangeListener{
             lunarData = it.data!!
             tv_lunar_year.text = lunarData.cyclicalYear
             tv_lunar_animal.text = "${lunarData.animal}年"
+            view.findViewById<TextView>(R.id.date_num).text = lunarData.lunarDay
+            view.findViewById<TextView>(R.id.date_lunar).text = "${lunarData.monthTranditional}月${lunarData.dayTranditional}"
+            view.findViewById<TextView>(R.id.suit).text = lunarData.suit
+            view.findViewById<TextView>(R.id.taboo).text = lunarData.taboo
+            adapter.addHeaderView(view)
+
         },Consumer{},date)
     }
 
@@ -186,28 +195,71 @@ CalendarView.OnWeekChangeListener{
     inner class EventAdapter (val context: Context, var events : MutableList<EventInfo>): RecyclerView.Adapter<EventAdapterViewHolder>() {
 
 
+        private var mHeaderViews : SparseArray<View> = SparseArray()
         private var itemClickListener: OnItemClickListener? = null
+        private var BASE_ITEM_TYPE_HEADER = 10000000
         override fun onBindViewHolder(holder: EventAdapterViewHolder, i: Int) {
-            holder.title.text = events[i].title
-            holder.date.text = "${events[i].start}"
-            holder.affair.text = events[i].affair
-            if (events[i].bg == null){
-                events[i].bg = R.mipmap.bg_event
-                database.update(events[i])
+            if (isHeaderPosition(i)){
+                return
             }
-            holder.layout.background = context.resources.getDrawable(events[i].bg!!,null)
-            holder.layout.setOnClickListener { this.itemClickListener!!.onItemClick(i) }
+            val position = i - mHeaderViews.size()
+            holder.title.text = events[position].title
+            holder.date.text = "${events[position].start}"
+            holder.affair.text = events[position].affair
+            if (events[position].bg == null){
+                events[position].bg = R.mipmap.bg_event
+                database.update(events[position])
+            }
+            holder.layout.background = context.resources.getDrawable(events[position].bg!!,null)
+            holder.layout.setOnClickListener { this.itemClickListener!!.onItemClick(position) }
             holder.del.setOnClickListener{
-                removeData(i)
+                removeData(position)
             }
         }
 
+        override fun getItemViewType(position: Int): Int {
+            if (isHeaderPosition(position)) {
+                // 直接返回position位置的key
+                return mHeaderViews.keyAt(position)
+            }
+            return super.getItemViewType(position - mHeaderViews.size())
+
+        }
+        private fun isHeaderPosition(position: Int): Boolean {
+            return position < mHeaderViews.size()
+        }
+
+
         override fun onCreateViewHolder(parent: ViewGroup, p1: Int): EventAdapterViewHolder {
+            if (isHeaderViewType(p1)) {
+                var headerView = mHeaderViews.get(p1)
+                return EventAdapterViewHolder(headerView)
+            }
             return EventAdapterViewHolder(LayoutInflater.from(context).inflate(R.layout.recycleritem, parent, false))
         }
 
+        private fun isHeaderViewType(viewType : Int):Boolean {
+            var position = mHeaderViews.indexOfKey(viewType)
+            return position >= 0
+        }
+
         override fun getItemCount(): Int {
-            return events.size
+            return events.size + mHeaderViews.size()
+        }
+
+        fun  addHeaderView(view : View) {
+            val position = mHeaderViews.indexOfValue(view)
+            if (position < 0) {
+                mHeaderViews.put(BASE_ITEM_TYPE_HEADER++, view)
+            }
+            notifyDataSetChanged()
+        }
+
+        fun removeHeaderView(view : View) {
+            val index = mHeaderViews.indexOfValue(view)
+            if (index < 0) return
+            mHeaderViews.removeAt(index)
+            notifyDataSetChanged()
         }
 
 
@@ -240,6 +292,12 @@ CalendarView.OnWeekChangeListener{
             this.events = events
             notifyDataSetChanged()
         }
+    }
+
+    abstract class MyRecycleViewHolder (itemView : View): RecyclerView.ViewHolder(itemView) {
+        lateinit var mImg : ImageView
+        lateinit var mTextView : TextView
+        public lateinit var mIcon : ImageView
     }
 
     class EventAdapterViewHolder (itemView : View): RecyclerView.ViewHolder(itemView){

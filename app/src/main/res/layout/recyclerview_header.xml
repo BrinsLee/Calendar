@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.brins.calendar.custom.FontTextView
+        android:id="@+id/date_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3"
+        app:font_type="DIN-Bold"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="50sp"
+        android:layout_margin="10dp"/>
+    <com.brins.calendar.custom.FontTextView
+        android:id="@+id/date_lunar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text=""
+        android:textColor="@android:color/black"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <com.brins.calendar.custom.FontTextView
+            android:text="宜"
+            android:textColor="@android:color/holo_green_light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <com.brins.calendar.custom.FontTextView
+            android:id="@+id/suit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:textSize="12sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.brins.calendar.custom.FontTextView
+            android:text="忌"
+            android:textColor="@android:color/holo_red_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <com.brins.calendar.custom.FontTextView
+            android:id="@+id/taboo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+</LinearLayout>

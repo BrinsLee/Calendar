@@ -156,7 +156,14 @@
                 app:year_view_week_height="12dp"
                 app:year_view_week_text_color="#e1e1e1"
                 app:year_view_week_text_size="6sp" />
+            <LinearLayout
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1dp">
 
+            </LinearLayout>
             <com.brins.calendar.custom.GroupRecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
