@@ -192,17 +192,18 @@ CalendarView.OnWeekChangeListener{
     }
 
 
-    inner class EventAdapter (val context: Context, var events : MutableList<EventInfo>): RecyclerView.Adapter<EventAdapterViewHolder>() {
+    inner class EventAdapter (val context: Context, var events : MutableList<EventInfo>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
         private var mHeaderViews : SparseArray<View> = SparseArray()
         private var itemClickListener: OnItemClickListener? = null
         private var BASE_ITEM_TYPE_HEADER = 10000000
-        override fun onBindViewHolder(holder: EventAdapterViewHolder, i: Int) {
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, i: Int) {
             if (isHeaderPosition(i)){
                 return
             }
             val position = i - mHeaderViews.size()
+            var vh : EventAdapterViewHolder= holder as EventAdapterViewHolder
             holder.title.text = events[position].title
             holder.date.text = "${events[position].start}"
             holder.affair.text = events[position].affair
@@ -230,10 +231,10 @@ CalendarView.OnWeekChangeListener{
         }
 
 
-        override fun onCreateViewHolder(parent: ViewGroup, p1: Int): EventAdapterViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, p1: Int): RecyclerView.ViewHolder {
             if (isHeaderViewType(p1)) {
                 var headerView = mHeaderViews.get(p1)
-                return EventAdapterViewHolder(headerView)
+                return HeadItemViewHolder(headerView)
             }
             return EventAdapterViewHolder(LayoutInflater.from(context).inflate(R.layout.recycleritem, parent, false))
         }
@@ -294,10 +295,11 @@ CalendarView.OnWeekChangeListener{
         }
     }
 
-    abstract class MyRecycleViewHolder (itemView : View): RecyclerView.ViewHolder(itemView) {
-        lateinit var mImg : ImageView
-        lateinit var mTextView : TextView
-        public lateinit var mIcon : ImageView
+     class HeadItemViewHolder (itemView : View): RecyclerView.ViewHolder(itemView) {
+         var dateNum : TextView = itemView.findViewById(R.id.date_num)
+         var dateLunar : TextView = itemView.findViewById(R.id.date_lunar)
+         var suit : TextView = itemView.findViewById(R.id.suit)
+         var taboo : TextView = itemView.findViewById(R.id.taboo)
     }
 
     class EventAdapterViewHolder (itemView : View): RecyclerView.ViewHolder(itemView){
