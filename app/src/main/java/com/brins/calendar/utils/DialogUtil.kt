@@ -8,8 +8,6 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
-import android.icu.util.Calendar
-import android.icu.util.GregorianCalendar
 import android.os.Build
 import android.text.TextUtils
 import android.util.Log
@@ -23,7 +21,6 @@ import com.brins.calendar.database.EventInfoDatabaseHelper
 import com.brins.calendar.model.EventInfo
 import com.tsongkha.spinnerdatepicker.DatePicker
 import com.tsongkha.spinnerdatepicker.DatePickerDialog
-import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 

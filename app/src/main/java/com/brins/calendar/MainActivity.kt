@@ -241,7 +241,11 @@ CalendarView.OnWeekChangeListener{
                 events[position].bg = R.drawable.bg_event
                 database.update(events[position])
             }
-            holder.layout.background = context.resources.getDrawable(events[position].bg!!,null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                holder.layout.background = context.resources.getDrawable(events[position].bg!!,null)
+            }else{
+                holder.layout.background = context.resources.getDrawable(events[position].bg!!)
+            }
             holder.layout.setOnClickListener { this.itemClickListener!!.onItemClick(position) }
             holder.del.setOnClickListener{
                 removeData(position)
