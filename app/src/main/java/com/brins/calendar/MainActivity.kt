@@ -88,7 +88,9 @@ CalendarView.OnWeekChangeListener{
         dialogUtil.setStart("${calendar.year}-${calendar.month}-${calendar.day}")
         dialogUtil.setEnd("${calendar.year}-${calendar.month}-${calendar.day}")
         events = database.appDatabase.dao().getEventViaDate("${calendar.year}-${calendar.month}-${calendar.day}%")
-//        getLunarData("$mYear-$mMonth-$mDay")
+        handler.postDelayed({
+            getLunarData("$mYear-$mMonth-$mDay")
+        },1200)
         if (events.size == 0) {
             Toast.makeText(this,"无事件",Toast.LENGTH_SHORT).show()
         }
@@ -164,7 +166,7 @@ CalendarView.OnWeekChangeListener{
                     adapter.update(events)
                     Toast.makeText(this,getString(R.string.save_success),Toast.LENGTH_SHORT).show()
                 }
-            },1500)
+            },1200)
         }
         adapter.setOnItemClickListener(object : OnItemClickListener{
             override fun onItemClick(position: Int) {
